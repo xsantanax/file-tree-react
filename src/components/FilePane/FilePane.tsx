@@ -1,10 +1,50 @@
-import React from "react";
-import { Box, Typography } from "@mui/material";
-import { FileRow } from "./components/FileRow";
-import { useWorkspaceContext } from "@/components/Workspace/WorkspaceContext";
+import { Box, Typography } from "@mui/material"
+import { FileRow } from "./components/FileRow"
+import { useWorkspaceContext } from "@/components/Workspace/WorkspaceContext"
 
 export const FilePane = () => {
-  const { files } = useWorkspaceContext();
+  const { files } = useWorkspaceContext()
+
+  const paths: Array<Array<string>> = files.map((file: any) =>
+    file.path.split("/")
+  )
+
+  // console.log(paths)
+
+  // traverse each filepath
+  // const dirs = ["app", "src", "App.tsx"]
+
+  // becomes ->
+
+  // const tree = {
+  // app: {
+  // src:{files[]}
+  // data:{files[]}
+  // files:[]
+  // }
+  // }
+
+  let tree: any = {}
+
+  for (let i = 0; i < paths.length; i++) {
+    let cur = tree
+
+    let array = paths[i]
+    let fileName = array.pop()
+
+    array.map((string) => {
+      if (cur[string]) {
+        cur = cur[string]
+      } else {
+        cur[string] = { files: [] }
+        cur = cur[string]
+      }
+    })
+
+    cur.files.push(fileName)
+  }
+
+  // console.log("tree", tree)
 
   return (
     <Box>
@@ -17,5 +57,5 @@ export const FilePane = () => {
         ))}
       </Box>
     </Box>
-  );
-};
+  )
+}
